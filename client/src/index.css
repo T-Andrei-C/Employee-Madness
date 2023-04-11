@@ -98,6 +98,12 @@ button {
   margin-right: 1rem;
 }
 
-.grow {
+.employee {
   flex: 1;
+}
+
+.equipment{
+  flex: 7;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
