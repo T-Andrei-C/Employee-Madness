@@ -1,4 +1,6 @@
-const EmployeeForm = ({ onSave, disabled, employee, onCancel }) => {
+import { useState } from "react";
+
+const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -10,7 +12,7 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel }) => {
       return acc;
     }, {});
 
-    return onSave(employee);
+    return onSave(employee, equipments);
   };
 
   return (
@@ -45,7 +47,29 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel }) => {
           id="position"
         />
       </div>
-      
+
+      {employee && equipments ? 
+      <div className="control">
+        <label htmlFor="equipments">Equipment:</label>
+        <select name="equipment" id="equipments">
+          <option>{employee && equipments?.find(equipment => equipment._id === employee.equipment)?.name}</option>
+
+          {employee && equipments?.filter(e => e._id !== employee.equipment).map(equipment => (
+            <option value={equipment.name} key={equipment._id}>{equipment.name}</option>
+          ))}
+        </select>
+      </div> : 
+      <div className="control">
+        <label htmlFor="equipments">Equipment:</label>
+        <select name="equipment" id="equipments">
+          <option hidden>Select an equipment...</option>
+          
+          {equipments?.map(equipment => (
+            <option value={equipment.name} key={equipment._id}>{equipment.name}</option>
+          ))}
+        </select>
+      </div>}
+
       <div className="buttons">
         <button type="submit" disabled={disabled}>
           {employee ? "Update Employee" : "Create Employee"}

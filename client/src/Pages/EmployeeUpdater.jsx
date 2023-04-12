@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import EmployeeForm from "../Components/EmployeeForm";
 import Loading from "../Components/Loading";
 
-const updateEmployee = (employee) => {
+const updateEmployee = (employee, equipments) => {
+  employee.equipment = equipments.find(e => e.name === employee.equipment)._id;
   return fetch(`/api/employees/${employee._id}`, {
     method: "PATCH",
     headers: {
@@ -18,11 +19,16 @@ const fetchEmployee = (id) => {
   return fetch(`/api/employees/${id}`).then((res) => res.json());
 };
 
+const fetchEquipments = () => {
+  return fetch(`/api/equipment/`).then((res) => res.json());
+};
+
 const EmployeeUpdater = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [employee, setEmployee] = useState(null);
+  const [equipments, setEquipments] = useState(null)
   const [updateLoading, setUpdateLoading] = useState(false);
   const [employeeLoading, setEmployeeLoading] = useState(true);
 
@@ -31,13 +37,17 @@ const EmployeeUpdater = () => {
     fetchEmployee(id)
       .then((employee) => {
         setEmployee(employee);
-        setEmployeeLoading(false);
       });
+    fetchEquipments()
+    .then((equipment) => {
+      setEquipments(equipment);
+      setEmployeeLoading(false);
+    });
   }, [id]);
 
-  const handleUpdateEmployee = (employee) => {
+  const handleUpdateEmployee = (employee, equipments) => {
     setUpdateLoading(true);
-    updateEmployee(employee)
+    updateEmployee(employee, equipments)
       .then(() => {
         setUpdateLoading(false);
         navigate("/");
@@ -54,6 +64,7 @@ const EmployeeUpdater = () => {
       onSave={handleUpdateEmployee}
       disabled={updateLoading}
       onCancel={() => navigate("/")}
+      equipments={equipments}
     />
   );
 };

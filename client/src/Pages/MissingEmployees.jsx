@@ -18,6 +18,7 @@ const MissingEmployeeList = () => {
   let [employees, setEmployees] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copyEmployees, setCopyEmployees] = useState(null)
+  const [render, setRender] = useState(0);
 
   const handleDelete = (id) => {
     deleteEmployee(id);
@@ -26,6 +27,18 @@ const MissingEmployeeList = () => {
       return employees.filter((employee) => employee._id !== id);
     });
   };
+
+  const handlePatchPresent = (employee) => {
+    employee.present = !employee.present;
+    fetch(`/api/employees/${employee._id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(employee),
+    }).then((res) => res.json());
+    setRender(render + 1);
+  }
 
   const handleInput = (e) => {
     employees = copyEmployees;
@@ -51,13 +64,14 @@ const MissingEmployeeList = () => {
   }
 
   useEffect(() => {
+    setLoading(true)
     fetchEmployees()
       .then((employees) => {
         setLoading(false);
         setEmployees(employees.filter(employee => employee.present === false));
         setCopyEmployees(employees.filter(employee => employee.present === false));
       })
-  }, []);
+  }, [render]);
 
   if (loading) {
     return <Loading />;
@@ -69,7 +83,7 @@ const MissingEmployeeList = () => {
         <InputFields handleInput={handleInput}/>
         <SortSelector handleSort={handleSort}/>
       </div>
-      <EmployeeTable employees={employees} onDelete={handleDelete} />
+      <EmployeeTable employees={employees} onDelete={handleDelete} present={handlePatchPresent} />
     </>
   );
 };
