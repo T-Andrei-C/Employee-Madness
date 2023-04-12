@@ -34,6 +34,11 @@ app.get("/api/equipment/:id", async (req, res) => {
   return res.json(equipment);
 });
 
+app.get("/employees/:search", async (req, res) => {
+  const employee = await EmployeeModel.find({ name: { $regex: new RegExp(req.params.search, "i") } })
+  return res.json(employee);
+});
+
 app.post("/api/employees/", async (req, res, next) => {
   const employee = req.body;
 
