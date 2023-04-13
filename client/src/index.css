@@ -29,7 +29,8 @@ button:hover:enabled {
 }
 
 button:disabled {
-  color: grey
+  color: grey;
+  cursor: default;
 }
 
 a {

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Loading from "../Components/Loading";
 import EmployeeTable from "../Components/EmployeeTable";
 import InputFields from "../Components/InputFields/InputFields";
 import SortSelector from "../Components/SortSelector/SortSelector";
 
-const fetchEmployees = () => {
-  return fetch("/api/employees").then((res) => res.json());
+const fetchEmployees = (search) => {
+  return fetch(`/employees/${search}`).then((res) => res.json());
 };
 
 const deleteEmployee = (id) => {
@@ -14,7 +15,9 @@ const deleteEmployee = (id) => {
   );
 };
 
-const MissingEmployeeList = () => {
+const EmployeesSearch = () => {
+  const { search } = useParams();
+
   let [employees, setEmployees] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copyEmployees, setCopyEmployees] = useState(null)
@@ -31,16 +34,16 @@ const MissingEmployeeList = () => {
     });
   };
 
-  const handlePatchPresent = async (employee) => {
+  const handlePatchPresent = (employee) => {
     employee.present = !employee.present;
-    await fetch(`/api/employees/${employee._id}`, {
+    fetch(`/api/employees/${employee._id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(employee),
     }).then((res) => res.json());
-    setRender(render + 1);
+    // setRender(render + 1);
   }
 
   const handleInput = (e) => {
@@ -55,7 +58,6 @@ const MissingEmployeeList = () => {
     const value = e.target.value;
     const newEmployees = [...employees];
     newEmployees.map(employee => employee.name = employee.name.split(" "));
-
     value === "Middle Name" ? newEmployees.sort((a,b) => a.name[1].localeCompare(b.name[1])) : 
     value === "First Name" ? newEmployees.sort((a,b) => a.name[0].localeCompare(b.name[0])) : 
     value === "Last Name" ? newEmployees.sort((a,b) => a.name[a.name.length - 1].localeCompare(b.name[b.name.length - 1])) : 
@@ -83,11 +85,11 @@ const MissingEmployeeList = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetchEmployees()
+    fetchEmployees(search)
       .then((employees) => {
-        setEmployees(employees.filter(employee => employee.present === false));
-        setCopyEmployees(employees.filter(employee => employee.present === false));
         setLoading(false);
+        setEmployees(employees);
+        setCopyEmployees(employees);
       })
   }, [render]);
 
@@ -115,4 +117,4 @@ const MissingEmployeeList = () => {
   );
 };
 
-export default MissingEmployeeList;
+export default EmployeesSearch;

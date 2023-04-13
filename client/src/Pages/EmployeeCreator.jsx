@@ -5,7 +5,6 @@ import EmployeeForm from "../Components/EmployeeForm";
 const createEmployee = (employee, equipments, brands) => {
   employee.equipment = equipments.find(e => e.name === employee.equipment)._id;
   employee.favoriteBrand = brands.find(b => b.name === employee.favoriteBrand)._id;
-  console.log(brands)
   return fetch("/api/employees", {
     method: "POST",
     headers: {
