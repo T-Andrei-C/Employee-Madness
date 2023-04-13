@@ -8,8 +8,10 @@ const levels = require("./levels.json");
 const positions = require("./positions.json");
 const equipmentNames = require("./equipmentNames.json");
 const equipmentType = require("./equipmentType.json");
+const brands = require("./brands.json");
 const EmployeeModel = require("../db/employee.model");
 const EquipmentModel = require("../db/equipment.model")
+const BrandModel = require("../db/brand.model")
 
 const mongoUrl = process.env.MONGO_URL;
 
@@ -19,6 +21,17 @@ if (!mongoUrl) {
 }
 
 const pick = (from) => from[Math.floor(Math.random() * (from.length - 0))];
+
+const populateBrand = async () => {
+  await BrandModel.deleteMany({});
+
+  const equipment = brands.map((name) => ({
+    name: name
+  }));
+
+  await BrandModel.create(...equipment);
+  console.log("Brands created");
+}
 
 const populateEquipment = async () => {
   await EquipmentModel.deleteMany({});
@@ -36,12 +49,14 @@ const populateEquipment = async () => {
 const populateEmployees = async () => {
   await EmployeeModel.deleteMany({});
   equipment = await EquipmentModel.find();
+  brandsNames = await BrandModel.find();
 
   const employees = names.map((name) => ({
     name,
     level: pick(levels),
     position: pick(positions),
     present: pick([true,false]),
+    favoriteBrand: pick(brandsNames),
     equipment: pick(equipment)
   }));
 
@@ -51,6 +66,8 @@ const populateEmployees = async () => {
 
 const main = async () => {
   await mongoose.connect(mongoUrl);
+  
+  await populateBrand();
 
   await populateEquipment();
 

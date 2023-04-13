@@ -24,8 +24,12 @@ button {
   background-color: white;
 }
 
-button:hover {
+button:hover:enabled {
   border-color: rgb(99, 151, 254);
+}
+
+button:disabled {
+  color: grey
 }
 
 a {

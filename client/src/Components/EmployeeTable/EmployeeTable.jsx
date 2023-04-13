@@ -12,7 +12,9 @@ const EmployeeTable = ({ sort, employees, onDelete, present }) => (
           <th>Present</th>
           <th>
             <Link to="/missing">
-              <button type="button">Missing Employees</button>
+              <button
+                disabled={window.location.href === "http://localhost:3000/missing" ? true : false}
+                type="button">Missing Employees</button>
             </Link>
           </th>
           <th />
@@ -24,7 +26,7 @@ const EmployeeTable = ({ sort, employees, onDelete, present }) => (
             <td>{employee.name}</td>
             <td>{employee.level}</td>
             <td>{employee.position}</td>
-            <td> <input onClick={() => present(employee)} type="checkbox" id={employee._id} defaultChecked={employee.present}/></td>
+            <td> <input onClick={() => present(employee)} type="checkbox" id={employee._id} defaultChecked={employee.present} /></td>
             <td>
               <Link to={`/update/employee/${employee._id}`}>
                 <button type="button">Update</button>

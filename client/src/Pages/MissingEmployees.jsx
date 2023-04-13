@@ -55,7 +55,7 @@ const MissingEmployeeList = () => {
     const value = e.target.value;
     const newEmployees = [...employees];
     newEmployees.map(employee => employee.name = employee.name.split(" "));
-    
+
     value === "Middle Name" ? newEmployees.sort((a,b) => a.name[1].localeCompare(b.name[1])) : 
     value === "First Name" ? newEmployees.sort((a,b) => a.name[0].localeCompare(b.name[0])) : 
     value === "Last Name" ? newEmployees.sort((a,b) => a.name[a.name.length - 1].localeCompare(b.name[b.name.length - 1])) : 
@@ -107,8 +107,10 @@ const MissingEmployeeList = () => {
         <SortSelector handleSort={handleSort}/>
       </div>
       <EmployeeTable sort={handleAscendOrDescend} employees={employeesPerPage} onDelete={handleDelete} present={handlePatchPresent} />
+      <div className="next-previous-btns">
       <button disabled={currentPage === 1 ? true : false} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
       <button disabled={currentPage === lastNumberOfPage ? true : false} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+      </div>
     </>
   );
 };

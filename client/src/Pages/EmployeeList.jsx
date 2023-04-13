@@ -106,8 +106,10 @@ const EmployeeList = () => {
         <SortSelector handleSort={handleSort}/>
       </div>
       <EmployeeTable sort={handleAscendOrDescend} employees={employeesPerPage} onDelete={handleDelete} present={handlePatchPresent} />
+      <div className="next-previous-btns">
       <button disabled={currentPage === 1 ? true : false} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
       <button disabled={currentPage === lastNumberOfPage ? true : false} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+      </div>
     </>
   );
 };

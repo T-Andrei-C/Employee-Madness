@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments }) => {
+const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments, brands }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -12,7 +12,7 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments }) => {
       return acc;
     }, {});
     
-    return onSave(employee, equipments);
+    return onSave(employee, equipments, brands);
   };
 
   return (
@@ -66,6 +66,28 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments }) => {
           
           {equipments?.map(equipment => (
             <option value={equipment.name} key={equipment._id}>{equipment.name}</option>
+          ))}
+        </select>
+      </div>}
+
+      {employee && brands ? 
+      <div className="control">
+        <label htmlFor="brands">Brand:</label>
+        <select name="favoriteBrand" id="brands">
+          <option>{employee && brands?.find(brand => brand._id === employee.favoriteBrand)?.name}</option>
+
+          {employee && brands?.filter(b => b._id !== employee.favoriteBrand).map(brand => (
+            <option value={brand.name} key={brand._id}>{brand.name}</option>
+          ))}
+        </select>
+      </div> : 
+      <div className="control">
+        <label htmlFor="brands">Brand:</label>
+        <select name="favoriteBrand" id="brands">
+          <option hidden>Select a brand...</option>
+          
+          {brands?.map(brand => (
+            <option value={brand.name} key={brand._id}>{brand.name}</option>
           ))}
         </select>
       </div>}

@@ -5,3 +5,9 @@
 .table-name{
   cursor: pointer;
 }
+
+.next-previous-btns{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -8,6 +8,9 @@ const EmployeeSchema = new Schema({
   level: String,
   position: String,
   present: Boolean,
+  favoriteBrand: {
+    type: Schema.ObjectId, ref: "Brand"
+  },
   equipment: {    
     type: Schema.ObjectId, ref: "Equipment"
   },
