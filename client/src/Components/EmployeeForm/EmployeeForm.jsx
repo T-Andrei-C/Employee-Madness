@@ -5,13 +5,13 @@ const EmployeeForm = ({ onSave, disabled, employee, onCancel, equipments }) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const entries = [...formData.entries()];
-
+    
     const employee = entries.reduce((acc, entry) => {
       const [k, v] = entry;
       acc[k] = v;
       return acc;
     }, {});
-
+    
     return onSave(employee, equipments);
   };
 

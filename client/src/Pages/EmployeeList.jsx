@@ -18,6 +18,9 @@ const EmployeeList = () => {
   let [employees, setEmployees] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copyEmployees, setCopyEmployees] = useState(null)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [whichSort, setWhichSort] = useState(false)
   const [render, setRender] = useState(0);
 
   const handleDelete = (id) => {
@@ -37,7 +40,7 @@ const EmployeeList = () => {
       },
       body: JSON.stringify(employee),
     }).then((res) => res.json());
-    setRender(render + 1);
+    // setRender(render + 1);
   }
 
   const handleInput = (e) => {
@@ -63,6 +66,20 @@ const EmployeeList = () => {
     setCopyEmployees(newEmployees);
   }
 
+  const handleAscendOrDescend = () => {
+    if (whichSort){
+      const sort = employees.sort((a,b) => b.name.localeCompare(a.name))
+      setEmployees(sort);
+      setCopyEmployees(sort);
+      setWhichSort(false);
+    } else {
+      const sort = employees.sort((a,b) => a.name.localeCompare(b.name))
+      setEmployees(sort);
+      setCopyEmployees(sort);
+      setWhichSort(true);
+    }
+  }
+
   useEffect(() => {
     setLoading(true)
     fetchEmployees()
@@ -77,13 +94,20 @@ const EmployeeList = () => {
     return <Loading />;
   }
 
+  const numberOfLastEmployee = currentPage * itemsPerPage;
+  const numberOfFirstEmployee = numberOfLastEmployee - itemsPerPage;
+  const lastNumberOfPage = Math.ceil(employees.length / itemsPerPage);
+  const employeesPerPage = employees.slice(numberOfFirstEmployee, numberOfLastEmployee);
+
   return (
     <>
       <div>
         <InputFields handleInput={handleInput}/>
         <SortSelector handleSort={handleSort}/>
       </div>
-      <EmployeeTable employees={employees} onDelete={handleDelete} present={handlePatchPresent} />
+      <EmployeeTable sort={handleAscendOrDescend} employees={employeesPerPage} onDelete={handleDelete} present={handlePatchPresent} />
+      <button disabled={currentPage === 1 ? true : false} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
+      <button disabled={currentPage === lastNumberOfPage ? true : false} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
     </>
   );
 };
