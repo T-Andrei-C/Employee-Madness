@@ -13,6 +13,7 @@ import EquipmentCreator from "./Pages/EquipmentCreator";
 import EquipmentUpdater from "./Pages/EquipmentUpdater";
 import MissingEmployeeList from "./Pages/MissingEmployees";
 import EmployeesSearch from "./Pages/EmployeesSearch";
+import EmployeeListForYears from "./Pages/EmployeeListForYears";
 
 import "./index.css";
 import TableTest from "./Pages/TableTest";
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <EmployeeList />,
+      },
+      {
+        path: "/employees/years-of-experience/:year",
+        element: <EmployeeListForYears />,
+      },
+      {
+        path: "/:collum/:order",
         element: <EmployeeList />,
       },
       {

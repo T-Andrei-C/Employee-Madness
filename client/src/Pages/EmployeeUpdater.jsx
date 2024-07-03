@@ -4,9 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import EmployeeForm from "../Components/EmployeeForm";
 import Loading from "../Components/Loading";
 
-const updateEmployee = (employee, equipments, brands) => {
-  employee.equipment = equipments.find(e => e.name === employee.equipment)._id;
-  employee.favoriteBrand = brands.find(b => b.name === employee.favoriteBrand)._id;
+const updateEmployee = (employee) => {
   return fetch(`/api/employees/${employee._id}`, {
     method: "PATCH",
     headers: {
@@ -14,6 +12,10 @@ const updateEmployee = (employee, equipments, brands) => {
     },
     body: JSON.stringify(employee),
   }).then((res) => res.json());
+};
+
+const fetchColors = (id) => {
+  return fetch(`/api/colors/`).then((res) => res.json());
 };
 
 const fetchEmployee = (id) => {
@@ -35,6 +37,7 @@ const EmployeeUpdater = () => {
   const [employee, setEmployee] = useState(null);
   const [equipments, setEquipments] = useState(null)
   const [brands, setBrands] = useState(null)
+  const [colors, setColors] = useState(null)
   const [updateLoading, setUpdateLoading] = useState(false);
   const [employeeLoading, setEmployeeLoading] = useState(true);
 
@@ -51,13 +54,17 @@ const EmployeeUpdater = () => {
     fetchBrands()
     .then((brand) => {
       setBrands(brand);
+    });
+    fetchColors()
+    .then((color) => {
+      setColors(color);
       setEmployeeLoading(false);
     });
   }, [id]);
 
-  const handleUpdateEmployee = (employee, equipments, brands) => {
+  const handleUpdateEmployee = (employee) => {
     setUpdateLoading(true);
-    updateEmployee(employee, equipments, brands)
+    updateEmployee(employee)
       .then(() => {
         setUpdateLoading(false);
         navigate("/");
@@ -70,12 +77,13 @@ const EmployeeUpdater = () => {
 
   return (
     <EmployeeForm
+      equipments={equipments}
       employee={employee}
       onSave={handleUpdateEmployee}
       disabled={updateLoading}
       onCancel={() => navigate("/")}
-      equipments={equipments}
       brands={brands}
+      colors={colors}
     />
   );
 };

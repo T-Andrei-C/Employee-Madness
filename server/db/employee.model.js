@@ -8,6 +8,12 @@ const EmployeeSchema = new Schema({
   level: String,
   position: String,
   present: Boolean,
+  salary: Number,
+  years: Number,
+  books: [{
+    bookName: String,
+    author: String
+  }],
   favoriteBrand: {
     type: Schema.ObjectId, ref: "Brand"
   },
@@ -18,6 +24,10 @@ const EmployeeSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  favColor: {
+    type: Schema.ObjectId, ref: "Color"
+  },
+  salary: Number
 });
 
 module.exports = mongoose.model("Employee", EmployeeSchema);

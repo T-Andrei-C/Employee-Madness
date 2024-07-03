@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import EmployeeForm from "../Components/EmployeeForm";
 
-const createEmployee = (employee, equipments, brands) => {
-  employee.equipment = equipments.find(e => e.name === employee.equipment)._id;
-  employee.favoriteBrand = brands.find(b => b.name === employee.favoriteBrand)._id;
+const createEmployee = (employee) => {
   return fetch("/api/employees", {
     method: "POST",
     headers: {
@@ -12,6 +10,10 @@ const createEmployee = (employee, equipments, brands) => {
     },
     body: JSON.stringify(employee),
   }).then((res) => res.json());
+};
+
+const fetchColors = (id) => {
+  return fetch(`/api/colors/`).then((res) => res.json());
 };
 
 const fetchEquipments = () => {
@@ -25,6 +27,7 @@ const fetchBrands = () => {
 const EmployeeCreator = () => {
   const navigate = useNavigate();
   const [equipments, setEquipments] = useState(null)
+  const [colors, setColors] = useState(null)
   const [brands, setBrands] = useState(null)
   const [loading, setLoading] = useState(false);
 
@@ -39,11 +42,16 @@ const EmployeeCreator = () => {
       setBrands(brand);
       // setEmployeeLoading(false);
     });
+    fetchColors()
+    .then((color) => {
+      setColors(color);
+      // setEmployeeLoading(false);
+    });
   }, []);
 
-  const handleCreateEmployee = (employee, equipments, brands) => {
+  const handleCreateEmployee = (employee) => {
     setLoading(true);
-    createEmployee(employee, equipments, brands)
+    createEmployee(employee)
       .then(() => {
         setLoading(false);
         navigate("/");
@@ -57,6 +65,7 @@ const EmployeeCreator = () => {
       onSave={handleCreateEmployee}
       equipments={equipments}
       brands={brands}
+      colors={colors}
     />
   );
 };

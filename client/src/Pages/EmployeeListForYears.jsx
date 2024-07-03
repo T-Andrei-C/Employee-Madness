@@ -4,6 +4,7 @@ import EmployeeTable from "../Components/EmployeeTable";
 import InputFields from "../Components/InputFields/InputFields";
 import SortSelector from "../Components/SortSelector/SortSelector";
 import { useNavigate, useParams } from "react-router-dom";
+import ErrorPage from "./ErrorPage";
 
 const fetchEmployees = () => {
   return fetch("/api/employees").then((res) => res.json());
@@ -15,9 +16,10 @@ const deleteEmployee = (id) => {
   );
 };
 
-const EmployeeList = () => {
+const EmployeeListForYears = () => {
   const navigate = useNavigate();
-  let { collum, order } = useParams();
+  let  years  = useParams();
+  console.log(years)
   let [employees, setEmployees] = useState(null);
   const [checkIfAscOrDesc, setCheckIfAscOrDesc] = useState(null);
   const [copyEmployees, setCopyEmployees] = useState(null)
@@ -114,45 +116,19 @@ const EmployeeList = () => {
     setLoading(true)
     fetchEmployees()
       .then((employees) => {
-        setLoading(false);
+        setLoading(false)
 
-        if (collum === "equipment" || collum === "favColor" || collum === "favoriteBrand") {
-          if (order === "desc") {
-            const sortEmployees = [...employees];
-            setEmployees(sortEmployees.sort((a, b) => b[collum].name.localeCompare(a[collum].name)));
-            setCopyEmployees(sortEmployees.sort((a, b) => b[collum].name.localeCompare(a[collum].name)));
-            navigate(`/${collum}/desc`);
-            setWhichSort(false);
-          } else if (order === "asc") {
-            const sortEmployees = [...employees];
-            setEmployees(sortEmployees.sort((a, b) => a[collum].name.localeCompare(b[collum].name)));
-            setCopyEmployees(sortEmployees.sort((a, b) => a[collum].name.localeCompare(b[collum].name)));
-            navigate(`/${collum}/asc`);
-            setWhichSort(true);
+          let newEmployees = employees.filter(employee => employee.years > years.year);
+          if (years.year < 0){
+            return <ErrorPage/>
           }
-        } else {
-          if (order === "desc") {
-            const sortEmployees = [...employees];
-            setEmployees(sortEmployees.sort((a, b) => b[collum].localeCompare(a[collum])));
-            setCopyEmployees(sortEmployees.sort((a, b) => b[collum].localeCompare(a[collum])));
-            navigate(`/${collum}/desc`);
-            setWhichSort(false);
-          } else if (order === "asc") {
-            const sortEmployees = [...employees];
-            setEmployees(sortEmployees.sort((a, b) => a[collum].localeCompare(b[collum])));
-            setCopyEmployees(sortEmployees.sort((a, b) => a[collum].localeCompare(b[collum])));
-            navigate(`/${collum}/asc`);
-            setWhichSort(true);
-          }
-        }
-
-        if (order === undefined) {
-          setEmployees(employees);
-          setCopyEmployees(employees);
-        }
+          
+          setEmployees(newEmployees);
+          setCopyEmployees(newEmployees);
+        
       })
 
-  }, [collum]);
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -160,8 +136,8 @@ const EmployeeList = () => {
 
   const numberOfLastEmployee = currentPage * itemsPerPage;
   const numberOfFirstEmployee = numberOfLastEmployee - itemsPerPage;
-  const lastNumberOfPage = Math.ceil(employees.length / itemsPerPage);
-  const employeesPerPage = employees.slice(numberOfFirstEmployee, numberOfLastEmployee);
+  const lastNumberOfPage = Math.ceil(employees?.length / itemsPerPage);
+  const employeesPerPage = employees?.slice(numberOfFirstEmployee, numberOfLastEmployee);
 
   return (
     <>
@@ -183,4 +159,4 @@ const EmployeeList = () => {
   );
 };
 
-export default EmployeeList;
+export default EmployeeListForYears;

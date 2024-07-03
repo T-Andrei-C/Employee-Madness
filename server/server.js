@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const EmployeeModel = require("./db/employee.model");
 const EquipmentModel = require("./db/equipment.model")
 const BrandModel = require("./db/brand.model")
+const ColorModel = require("./db/colors.model")
 
 const { MONGO_URL, PORT = 8080 } = process.env;
 
@@ -16,9 +17,9 @@ const app = express();
 app.use(express.json());
 
 app.get("/api/employees/", async (req, res) => {
-  const employees = await EmployeeModel.find().sort({ created: "desc" });
+  const employees = await EmployeeModel.find().populate("equipment favColor favoriteBrand").sort({ created: "desc" });
   return res.json(employees);
-});
+}); 
 
 app.get("/api/equipment/", async (req, res) => {
   const equipment = await EquipmentModel.find().sort({ created: "desc" });
@@ -30,15 +31,20 @@ app.get("/api/brands/", async (req, res) => {
   return res.json(brands);
 });
 
+app.get("/api/colors/", async (req, res) => {
+  const colors = await ColorModel.find().sort({ created: "desc" });
+  return res.json(colors);
+});
+
 app.get("/api/employees/:id", async (req, res) => {
-  const employee = await EmployeeModel.findById(req.params.id);
+  const employee = await EmployeeModel.findById(req.params.id).populate("equipment favColor favoriteBrand");
   return res.json(employee);
 });
 
 app.get("/api/equipment/:id", async (req, res) => {
   const equipment = await EquipmentModel.findById(req.params.id);
   return res.json(equipment);
-});
+}); 
 
 app.get("/employees/:search", async (req, res) => {
   const employee = await EmployeeModel.find({ name: { $regex: new RegExp(req.params.search, "i") } })
@@ -57,13 +63,13 @@ app.post("/api/employees/", async (req, res, next) => {
 });
 
 app.patch("/api/employees/:id", async (req, res, next) => {
-  console.log(req.body)
   try {
     const employee = await EmployeeModel.findOneAndUpdate(
       { _id: req.params.id },
       { $set: { ...req.body } },
       { new: true }
     );
+    console.log(employee)
     return res.json(employee);
   } catch (err) {
     return next(err);
