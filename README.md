@@ -18,14 +18,14 @@ Copy the .env.example as .env and fill up the environment variable for your pers
 #### Install dependencies
 
 ```bash
-cd cliend
+cd server
 npm install
 ```
 
 #### Runnig the code
 
 ```bash
-cd client
+cd server
 npm start
 ```
 
@@ -34,14 +34,14 @@ npm start
 #### Install dependencies
 
 ```bash
-cd server
+cd client
 npm install
 ```
 
 #### Runnig the code
 
 ```bash
-cd server
+cd client
 npm start
 ```
 
