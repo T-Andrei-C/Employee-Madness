@@ -5,6 +5,9 @@
 Employee Madness is a web application designed to streamline employee management and equipment handling. This user-friendly platform enables administrators to efficiently manage employee records, including the ability to update existing details or remove outdated entries. In addition to robust employee management features, Employee Madness also facilitates the creation, assignment, and tracking of equipment, ensuring that all resources are utilized effectively and maintained properly.
 
 ## Technologies Used
+- **Node.js**
+- **Express.js**
+- **MongoDbCompass**
 - **React**
 
 ## Setup
